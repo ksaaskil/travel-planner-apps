@@ -38,11 +38,12 @@ new Vue({
     },
     subscribeMqtt() {
       // Subscribe to mqtt.hsl.fi
-      let msgs=0;
-      // const topic = '/hfp/journey/bus/+/+/+/+/+/+/60;25/10/#';
+      let msgs = 0;
+      // Hardcoded HSL bus routes
       const buses = [80, 82, 83];
-      const topics = buses.map(num => `/hfp/journey/bus/+/10${num}/#`);
-      // const topic = '/hfp/journey/bus/+/1083/#';
+      const destination = 'Herttoniemi(M)';
+      const topics = buses.map(num => `/hfp/v1/journey/ongoing/bus/+/+/10${num}/+/${destination}/#`);
+
       const url = 'wss://mqtt.hsl.fi'
       mqtt_client = mqtt.connect(url);
       mqtt_client.on('connect', () => {
@@ -68,20 +69,23 @@ new Vue({
       const position = [vehicle.lat, vehicle.long];
       const vehicleId = vehicle.veh;
       this.msgs++;
-      const marker = L.marker(position)
-        .addTo(this.map)
-        .bindPopup(
-          `
-            <pre>Bus ${vehicle.desi}, tst ${new Date(vehicle.tst)}</pre>
-          `
-        );
+
       const prevMarkerOrNull = this.markers[vehicleId];
       if (prevMarkerOrNull) {
         L.polyline([this.prevPositions[vehicleId], position], { color: 'blue' })
           .addTo(this.map);
-        this.map.removeLayer(prevMarkerOrNull);
+        // this.map.removeLayer(prevMarkerOrNull);
+        prevMarkerOrNull.setLatLng(new L.LatLng(position[0], position[1]));
+      } else {
+        const marker = L.marker(position)
+          .addTo(this.map)
+          .bindPopup(
+            `
+              <pre>Bus ${vehicle.desi}, tst ${new Date(vehicle.tst)}</pre>
+            `
+          );
+        this.markers[vehicleId] = marker;
       }
-      this.markers[vehicleId] = marker;
       this.prevPositions[vehicleId] = position;
     }
   },
