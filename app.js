@@ -16,13 +16,13 @@ new Vue({
   methods: {
     initMap() {
       this.map = L.map('map').setView([60.192247, 25.039730], 14);
-      /*
-      L.tileLayer('http://api.digitransit.fi/map/v1/{id}/{z}/{x}/{y}.png', {
+
+      this.tileLayer = L.tileLayer('http://api.digitransit.fi/map/v1/{id}/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
           '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ',
-        id: 'hsl-map'}).addTo(map);
-      */
+        id: 'hsl-map'}).addTo(this.map);
+      /*
       const accessToken='shhh';
       this.tileLayer = L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${accessToken}`, {
     		maxZoom: 18,
@@ -32,7 +32,7 @@ new Vue({
     		id: 'mapbox.streets',
     		accessToken: 'pk.eyJ1Ijoic2Fhc2tpcyIsImEiOiJjajhlMmI5NmMwbzZ2MzJvM2ttNzhuZGVvIn0.-nFow1-J4TdVfD-YZ4RMOA'
     	});
-
+      */
       this.tileLayer.addTo(this.map);
     },
     subscribeMqtt() {
